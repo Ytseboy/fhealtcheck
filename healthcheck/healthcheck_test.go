@@ -11,7 +11,7 @@ import "testing"
 
 func TestGet(t *testing.T) {
 	c := TracingClient{}
-	resp := Get(c, "http://google.com")
+	resp := Get(c, "http://facebook.com")
 	if resp == nil {
 		t.Fail()
 	}

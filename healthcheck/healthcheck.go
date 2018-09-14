@@ -4,12 +4,16 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptrace"
-	"time"
 )
 
-var (
-	GetConnTime time.Time
-)
+type Getter interface {
+}
+
+type Doer interface {
+}
+
+type GetterDoer interface {
+}
 
 type transport struct {
 	current *http.Request
@@ -24,7 +28,11 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 }
 
 func (t *transport) GetConInfo(hostPort string) {
-	log.Println("get con info")
+	log.Println("get conn info")
+}
+
+func (t *transport) GotConnInfo(info httptrace.GotConnInfo) {
+	log.Println("got conn info")
 }
 
 func GetRequest(url string, t *transport) (*http.Request, error) {
@@ -36,6 +44,7 @@ func GetRequest(url string, t *transport) (*http.Request, error) {
 
 	trace := &httptrace.ClientTrace{
 		GetConn: t.GetConInfo,
+		GotConn: t.GotConnInfo,
 	}
 
 	req = req.WithContext(httptrace.WithClientTrace(req.Context(), trace))
@@ -57,13 +66,3 @@ func Get(client TracingClient, url string) *http.Response {
 
 	return resp
 }
-
-// func (t *TraceClient) GotConInfo(nfo httptrace.GotConnInfo) {
-// 	log.Println("got con info")
-// 	t.GotConnTime = time.Now()
-// }
-
-// func (t *TraceClient) RoundTrip(req *http.Request) (*http.Response, error) {
-// 	t.RTCounter++
-// 	return http.DefaultTransport.RoundTrip(req)
-// }
