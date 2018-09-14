@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptrace"
+	"time"
 )
 
 type Getter interface {
@@ -13,6 +14,12 @@ type Doer interface {
 }
 
 type GetterDoer interface {
+}
+
+type HealthMetrics struct {
+	resp          *http.Response
+	dnsResolvable bool
+	connDur       time.Duration
 }
 
 type transport struct {
@@ -63,6 +70,8 @@ func Get(client TracingClient, url string) *http.Response {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	// i := HealthMetrics{}
 
 	return resp
 }
