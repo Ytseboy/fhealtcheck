@@ -1,0 +1,8 @@
+{
+    "endpoints": [
+       {
+            "url": "google.com",
+            "content_requirement": "google"
+       } 
+    ]
+}
